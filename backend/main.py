@@ -29,3 +29,34 @@ except ImportError:  # pragma: no cover
 
 load_dotenv()
 
+# ═══════════════════════════════════════════════════════════════════════
+#  CONFIG — tune everything here
+# ═══════════════════════════════════════════════════════════════════════
+MAX_OUTPUT_TOKENS  = 500     # hard cap on answer length (biggest cost lever)
+MAX_INPUT_CHARS    = 40000   # raw page text accepted (retrieval trims it further)
+MAX_QUERY_CHARS    = 500
+CONTEXT_CHUNKS     = 4       # how many best-matching chunks go to the model
+CHUNK_SIZE         = 700     # target characters per chunk
+
+ENABLE_WEB_SEARCH  = True    # fallback fires a 2nd LLM call — set False to save
+DAILY_GLOBAL_LIMIT = 500     # questions/day across ALL users (budget ceiling)
+PER_IP_DAILY_LIMIT = 20      # questions/day per user
+
+ALLOWED_MODELS = {
+    "google/gemini-2.5-flash",
+    "openai/gpt-4o-mini"
+}
+DEFAULT_MODEL = "openai/gpt-4o-mini"
+# ═══════════════════════════════════════════════════════════════════════
+
+MESH_KEY = os.getenv("MESH_API", "")
+if not MESH_KEY:
+    print("[warn] MESH_API is not set — add it to .env (local) or environment variables (deploy).")
+
+mesh_client = AsyncOpenAI(
+    api_key=MESH_KEY or "missing-key",
+    base_url="https://api.meshapi.ai/v1",
+)
+
+MODEL_NAMES = {
+    "google/gemini-2.5-flash": "Gemini 2.5 Flash",
