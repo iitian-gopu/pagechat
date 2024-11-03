@@ -60,3 +60,33 @@ mesh_client = AsyncOpenAI(
 
 MODEL_NAMES = {
     "google/gemini-2.5-flash": "Gemini 2.5 Flash",
+    "openai/gpt-4o-mini":      "GPT-4o Mini",
+    "deepseek/deepseek-r1":    "DeepSeek R1",
+}
+
+# Models that can't do tool calling — web-search fallback is skipped for them
+NO_TOOLS_MODELS = {"deepseek/deepseek-r1"}
+
+WEB_SEARCH_TOOL = {
+    "type": "function",
+    "function": {
+        "name": "web_search",
+        "description": "Search the web when the page context does not contain the answer.",
+        "parameters": {
+            "type": "object",
+            "properties": {"query": {"type": "string", "description": "Search query"}},
+            "required": ["query"],
+        },
+    },
+}
+
+app = FastAPI(title="PageChat Backend")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+session_db: Dict[str, deque] = {}
+
+
+# ── Rate limiting (in-memory; resets daily and on restart) ──────────────
+_usage = {"day": date.today(), "global": 0, "per_ip": {}}
+
+
