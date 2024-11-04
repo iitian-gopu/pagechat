@@ -90,3 +90,34 @@ session_db: Dict[str, deque] = {}
 _usage = {"day": date.today(), "global": 0, "per_ip": {}}
 
 
+def _client_ip(request: Request) -> str:
+    fwd = request.headers.get("x-forwarded-for")
+    if fwd:
+        return fwd.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+def enforce_rate_limit(request: Request):
+    today = date.today()
+    if _usage["day"] != today:
+        _usage["day"] = today
+        _usage["global"] = 0
+        _usage["per_ip"] = {}
+
+    ip = _client_ip(request)
+    used = _usage["per_ip"].get(ip, 0)
+
+    if _usage["global"] >= DAILY_GLOBAL_LIMIT:
+        raise HTTPException(429, "Daily service limit reached. Please try again tomorrow.")
+    if used >= PER_IP_DAILY_LIMIT:
+        raise HTTPException(429, "You've reached today's question limit. Please come back tomorrow.")
+
+    _usage["global"] += 1
+    _usage["per_ip"][ip] = used + 1
+
+
+# ── Lite retrieval: pick the chunks most relevant to the question ───────
+_STOPWORDS = {
+    "the", "a", "an", "is", "are", "was", "were", "be", "of", "in", "on", "to",
+    "and", "or", "for", "with", "at", "by", "it", "its", "this", "that", "what",
+    "which", "who", "how", "why", "when", "where", "do", "does", "did", "can",
