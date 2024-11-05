@@ -121,3 +121,33 @@ _STOPWORDS = {
     "the", "a", "an", "is", "are", "was", "were", "be", "of", "in", "on", "to",
     "and", "or", "for", "with", "at", "by", "it", "its", "this", "that", "what",
     "which", "who", "how", "why", "when", "where", "do", "does", "did", "can",
+    "about", "as", "from", "me", "my", "you", "your", "i", "we", "us",
+}
+
+
+def _words(text: str) -> list:
+    return [w for w in re.findall(r"[a-z0-9]+", text.lower()) if w not in _STOPWORDS]
+
+
+def _chunk(text: str) -> list:
+    """Split on paragraph boundaries into ~CHUNK_SIZE pieces."""
+    paras = [p.strip() for p in re.split(r"\n\s*\n|\n", text) if p.strip()]
+    chunks, buf = [], ""
+    for p in paras:
+        if len(buf) + len(p) + 1 <= CHUNK_SIZE:
+            buf = f"{buf}\n{p}".strip()
+        else:
+            if buf:
+                chunks.append(buf)
+            buf = p[:CHUNK_SIZE]
+    if buf:
+        chunks.append(buf)
+    return chunks
+
+
+def build_context(text: str, query: str) -> str:
+    text = (text or "")[:MAX_INPUT_CHARS]
+    chunks = _chunk(text)
+    if len(chunks) <= CONTEXT_CHUNKS:
+        return "\n\n".join(chunks)
+
