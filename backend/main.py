@@ -151,3 +151,34 @@ def build_context(text: str, query: str) -> str:
     if len(chunks) <= CONTEXT_CHUNKS:
         return "\n\n".join(chunks)
 
+    q_words = set(_words(query))
+    scored = []
+    for i, c in enumerate(chunks):
+        c_words = _words(c)
+        score = sum(1 for w in c_words if w in q_words)
+        scored.append((score, i, c))
+
+    top = sorted(scored, key=lambda t: t[0], reverse=True)[:CONTEXT_CHUNKS]
+    if top and top[0][0] == 0:
+        # Question matched nothing — fall back to the start of the page
+        return "\n\n".join(chunks[:CONTEXT_CHUNKS])
+    top.sort(key=lambda t: t[1])  # restore page order
+    return "\n\n".join(c for _, _, c in top)
+
+
+# ── Session history ─────────────────────────────────────────────────────
+def get_history(session_id: str) -> deque:
+    if session_id not in session_db:
+        session_db[session_id] = deque(maxlen=6)
+    return session_db[session_id]
+
+
+def format_history(history: deque) -> str:
+    return "".join(f"User: {u}\nAI: {a}\n" for u, a in history)
+
+
+# ── Web search fallback ─────────────────────────────────────────────────
+def run_web_search(query: str, max_results: int = 5) -> str:
+    try:
+        with DDGS() as ddgs:
+            results = list(ddgs.text(query, max_results=max_results))
