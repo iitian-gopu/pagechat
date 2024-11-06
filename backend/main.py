@@ -182,3 +182,34 @@ def run_web_search(query: str, max_results: int = 5) -> str:
     try:
         with DDGS() as ddgs:
             results = list(ddgs.text(query, max_results=max_results))
+        joined = "\n\n".join(f"{r.get('title', '')}\n{r.get('body', '')}" for r in results)
+        return joined or "No results found."
+    except Exception as e:  # search being down should never crash a chat
+        print(f"[web_search error] {e}")
+        return "Web search is currently unavailable."
+
+
+# ── Model call ──────────────────────────────────────────────────────────
+async def ask_model(model: str, context: str, query: str, history_str: str) -> dict:
+    """Returns {'answer': str, 'used_search': bool}."""
+    messages = [
+        {
+            "role": "system",
+            "content": (
+                "You are a helpful assistant answering questions about a webpage.\n"
+                "1. Answer from the provided page context and conversation history.\n"
+                "2. If the context doesn't contain the answer, call the web_search tool.\n"
+                "3. Answer directly and concisely. Use plain text, no markdown headers."
+            ),
+        },
+        {
+            "role": "user",
+            "content": (
+                f"Conversation so far:\n{history_str}\n\n"
+                f"Page content:\n{context}\n\n"
+                f"Question: {query}"
+            ),
+        },
+    ]
+
+    supports_tools = ENABLE_WEB_SEARCH and model not in NO_TOOLS_MODELS
