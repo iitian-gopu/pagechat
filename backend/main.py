@@ -213,3 +213,33 @@ async def ask_model(model: str, context: str, query: str, history_str: str) -> d
     ]
 
     supports_tools = ENABLE_WEB_SEARCH and model not in NO_TOOLS_MODELS
+
+    try:
+        response = await mesh_client.chat.completions.create(
+            model=model,
+            messages=messages,
+            max_tokens=MAX_OUTPUT_TOKENS,
+            **(dict(tools=[WEB_SEARCH_TOOL], tool_choice="auto") if supports_tools else {}),
+            temperature=0,
+        )
+        message = response.choices[0].message
+
+        if supports_tools and message.tool_calls:
+            args = json.loads(message.tool_calls[0].function.arguments)
+            search_query = args.get("query", query)
+            print(f"[web_search] {model} → {search_query}")
+            search_result = run_web_search(search_query)
+
+            final = await mesh_client.chat.completions.create(
+                model=model,
+                messages=[
+                    {"role": "system",
+                     "content": "Answer the question using the web search results. Be direct and concise. Plain text only."},
+                    {"role": "user",
+                     "content": f"Search results:\n{search_result}\n\nQuestion: {query}"},
+                ],
+                max_tokens=MAX_OUTPUT_TOKENS,
+                temperature=0,
+            )
+            return {"answer": final.choices[0].message.content, "used_search": True}
+
