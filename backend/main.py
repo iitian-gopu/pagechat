@@ -243,3 +243,34 @@ async def ask_model(model: str, context: str, query: str, history_str: str) -> d
             )
             return {"answer": final.choices[0].message.content, "used_search": True}
 
+        return {"answer": message.content, "used_search": False}
+
+    except Exception as e:
+        print(f"[warn] {model}: {e} — retrying without tools")
+        response = await mesh_client.chat.completions.create(
+            model=model, messages=messages, max_tokens=MAX_OUTPUT_TOKENS, temperature=0
+        )
+        return {"answer": response.choices[0].message.content, "used_search": False}
+
+
+# ── Schemas ─────────────────────────────────────────────────────────────
+class ChatRequest(BaseModel):
+    text: str
+    query: str
+    session_id: str
+    model: Optional[str] = DEFAULT_MODEL
+
+
+class ResetRequest(BaseModel):
+    session_id: str
+
+
+# ── Routes ──────────────────────────────────────────────────────────────
+@app.get("/")
+def health():
+    return {"status": "ok"}
+
+
+@app.get("/models")
+def get_models():
+    models = [{"id": mid, "name": MODEL_NAMES.get(mid, mid)} for mid in sorted(ALLOWED_MODELS)]
