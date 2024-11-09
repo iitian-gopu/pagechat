@@ -274,3 +274,33 @@ def health():
 @app.get("/models")
 def get_models():
     models = [{"id": mid, "name": MODEL_NAMES.get(mid, mid)} for mid in sorted(ALLOWED_MODELS)]
+    return JSONResponse(content={"models": models, "default": DEFAULT_MODEL})
+
+
+@app.post("/chat")
+async def chat(payload: ChatRequest, request: Request):
+    enforce_rate_limit(request)
+
+    if not MESH_KEY:
+        raise HTTPException(500, "MESH_API key is not configured on the server.")
+
+    query = (payload.query or "").strip()
+    if not query:
+        raise HTTPException(400, "Question is empty.")
+    if len(query) > MAX_QUERY_CHARS:
+        raise HTTPException(400, "Question is too long.")
+
+    model = payload.model if payload.model in ALLOWED_MODELS else DEFAULT_MODEL
+    history = get_history(payload.session_id)
+    context = build_context(payload.text, query)
+
+    result = await ask_model(model, context, query, format_history(history))
+    history.append((query, result["answer"]))
+
+    return JSONResponse(content=result)
+
+
+@app.post("/reset")
+def reset(payload: ResetRequest):
+    session_db.pop(payload.session_id, None)
+    return {"status": "cleared"}
