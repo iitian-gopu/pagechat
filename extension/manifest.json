@@ -1,0 +1,9 @@
+{
+  "manifest_version": 3,
+  "name": "PageChat",
+  "version": "1.0",
+  "description": "Chat with any webpage. Ask questions, get answers from the page — with web search fallback.",
+  "permissions": ["activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
