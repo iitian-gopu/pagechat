@@ -1,0 +1,26 @@
+/* PageChat — "highlighter on dark paper"
+   Ink-teal ground, paper-white text, highlighter-yellow accent.
+   The yellow is spent in one place: marking what matters. */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:        #0e1719;   /* page ground */
+  --ink-raise:  #152124;   /* cards / bubbles */
+  --ink-line:   #223236;   /* borders */
+  --paper:      #eef2ee;   /* primary text */
+  --paper-dim:  #8fa3a0;   /* secondary text */
+  --paper-faint:#5c6f6d;
+  --mark:       #ffd643;   /* highlighter yellow — the one accent */
+  --mark-ink:   #201a00;   /* text on yellow */
+  --bad:        #ff7a6e;
+  --ok:         #7ee2a8;
+  --r: 12px;
+}
+
+html, body { height: 560px; }
+
+body {
+  width: 400px;
