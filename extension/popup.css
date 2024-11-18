@@ -24,3 +24,29 @@ html, body { height: 560px; }
 
 body {
   width: 400px;
+  display: flex;
+  flex-direction: column;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 13px;
+  overflow: hidden;
+}
+
+/* ── Top bar ─────────────────────────────────────────────────── */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 12px;
+  border-bottom: 1px solid var(--ink-line);
+  flex-shrink: 0;
+}
+
+.brand { display: flex; align-items: center; gap: 9px; }
+
+/* the mark: a short highlighter swipe */
+.brand-mark {
+  width: 18px; height: 8px;
+  background: var(--mark);
+  border-radius: 2px;
+  transform: skewX(-12deg);
+  box-shadow: 0 0 14px rgba(255, 214, 67, .35);
