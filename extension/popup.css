@@ -50,3 +50,29 @@ body {
   border-radius: 2px;
   transform: skewX(-12deg);
   box-shadow: 0 0 14px rgba(255, 214, 67, .35);
+}
+
+.brand h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px; font-weight: 700;
+  letter-spacing: -.02em;
+}
+.brand h1 em {
+  font-style: normal;
+  color: var(--mark);
+}
+
+.topbar-right { display: flex; align-items: center; gap: 10px; }
+
+.status {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--paper-faint);
+  transition: background .3s;
+}
+.status.online  { background: var(--ok);  box-shadow: 0 0 8px rgba(126,226,168,.5); }
+.status.offline { background: var(--bad); box-shadow: 0 0 8px rgba(255,122,110,.5); }
+
+.ghost-btn {
+  background: none;
+  border: 1px solid var(--ink-line);
+  color: var(--paper-dim);
