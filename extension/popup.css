@@ -76,3 +76,28 @@ body {
   background: none;
   border: 1px solid var(--ink-line);
   color: var(--paper-dim);
+  font: 600 11px 'Inter', sans-serif;
+  padding: 5px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.ghost-btn:hover { color: var(--paper); border-color: var(--paper-faint); }
+
+/* ── Chat log ────────────────────────────────────────────────── */
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  scroll-behavior: smooth;
+}
+.chat-log::-webkit-scrollbar { width: 4px; }
+.chat-log::-webkit-scrollbar-thumb { background: var(--ink-line); border-radius: 4px; }
+
+.empty-state {
+  margin: auto;
+  text-align: center;
+  max-width: 250px;
