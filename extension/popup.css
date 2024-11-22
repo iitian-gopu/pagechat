@@ -127,3 +127,29 @@ body {
 @keyframes rise {
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .msg, .empty-state { animation: none; }
+  .chat-log { scroll-behavior: auto; }
+}
+
+.msg.user {
+  align-self: flex-end;
+  background: var(--mark);
+  color: var(--mark-ink);
+  font-weight: 500;
+  border-bottom-right-radius: 4px;
+}
+
+.msg.bot {
+  align-self: flex-start;
+  background: var(--ink-raise);
+  border: 1px solid var(--ink-line);
+  border-bottom-left-radius: 4px;
+}
+
+.msg.error {
+  align-self: stretch;
+  background: rgba(255,122,110,.08);
+  border: 1px solid rgba(255,122,110,.3);
+  color: var(--bad);
