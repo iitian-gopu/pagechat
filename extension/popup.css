@@ -153,3 +153,28 @@ body {
   background: rgba(255,122,110,.08);
   border: 1px solid rgba(255,122,110,.3);
   color: var(--bad);
+  font-size: 12px;
+}
+
+/* footnote under a bot message */
+.msg-note {
+  align-self: flex-start;
+  display: flex; align-items: center; gap: 8px;
+  margin: -4px 0 0 4px;
+  font-size: 10.5px;
+  color: var(--paper-faint);
+}
+.msg-note button {
+  background: none; border: none;
+  color: var(--paper-faint);
+  font: 600 10.5px 'Inter', sans-serif;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color .2s;
+}
+.msg-note button:hover { color: var(--mark); }
+
+/* typing indicator */
+.typing {
+  align-self: flex-start;
