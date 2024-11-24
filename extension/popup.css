@@ -178,3 +178,29 @@ body {
 /* typing indicator */
 .typing {
   align-self: flex-start;
+  display: flex; gap: 4px;
+  padding: 12px 14px;
+  background: var(--ink-raise);
+  border: 1px solid var(--ink-line);
+  border-radius: var(--r);
+  border-bottom-left-radius: 4px;
+}
+.typing i {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--paper-dim);
+  animation: blink 1.2s infinite;
+}
+.typing i:nth-child(2) { animation-delay: .18s; }
+.typing i:nth-child(3) { animation-delay: .36s; }
+@keyframes blink { 0%,70%,100% { opacity: .25; } 35% { opacity: 1; } }
+
+/* ── Composer ────────────────────────────────────────────────── */
+.composer {
+  flex-shrink: 0;
+  border-top: 1px solid var(--ink-line);
+  padding: 10px 14px 12px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.composer-row { display: flex; gap: 8px; align-items: flex-end; }
+
