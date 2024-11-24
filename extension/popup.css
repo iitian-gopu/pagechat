@@ -204,3 +204,29 @@ body {
 
 .composer-row { display: flex; gap: 8px; align-items: flex-end; }
 
+textarea {
+  flex: 1;
+  min-height: 38px; max-height: 96px;
+  resize: none;
+  background: var(--ink-raise);
+  border: 1px solid var(--ink-line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--paper);
+  font: 400 13px/1.5 'Inter', sans-serif;
+  transition: border-color .2s, box-shadow .2s;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--mark);
+  box-shadow: 0 0 0 3px rgba(255,214,67,.14);
+}
+textarea::placeholder { color: var(--paper-faint); }
+
+#sendBtn {
+  width: 38px; height: 38px;
+  flex-shrink: 0;
+  border: none; border-radius: 10px;
+  background: var(--mark);
+  color: var(--mark-ink);
+  cursor: pointer;
