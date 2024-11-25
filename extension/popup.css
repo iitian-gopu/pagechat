@@ -230,3 +230,28 @@ textarea::placeholder { color: var(--paper-faint); }
   background: var(--mark);
   color: var(--mark-ink);
   cursor: pointer;
+  display: grid; place-items: center;
+  transition: transform .12s, filter .2s;
+}
+#sendBtn:hover  { filter: brightness(1.06); }
+#sendBtn:active { transform: scale(.94); }
+#sendBtn:disabled { opacity: .5; cursor: not-allowed; }
+#sendBtn:focus-visible { outline: 2px solid var(--paper); outline-offset: 2px; }
+
+.composer-meta {
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+select {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--paper-dim);
+  font: 600 11px 'Inter', sans-serif;
+  cursor: pointer;
+  padding: 2px 0;
+}
+select:focus { outline: none; color: var(--paper); }
+select option { background: var(--ink-raise); color: var(--paper); }
+
+.meta-hint { font-size: 10.5px; color: var(--paper-faint); }
