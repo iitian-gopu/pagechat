@@ -20,3 +20,24 @@ let busy = false;
 async function init() {
   try {
     const res = await fetch(`${API}/models`);
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+
+    modelSelect.innerHTML = "";
+    data.models.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.name;
+      modelSelect.appendChild(opt);
+    });
+    if (data.default) modelSelect.value = data.default;
+
+    statusDot.classList.add("online");
+    statusDot.title = "Backend connected";
+  } catch {
+    statusDot.classList.add("offline");
+    statusDot.title = "Backend unreachable";
+    modelSelect.innerHTML = `<option value="">Backend offline</option>`;
+    addError(`Can't reach the backend at ${API}. Start it and reopen this popup.`);
+  }
+
