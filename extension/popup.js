@@ -41,3 +41,24 @@ async function init() {
     addError(`Can't reach the backend at ${API}. Start it and reopen this popup.`);
   }
 
+  chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+    if (tabs[0]) sessionId = String(tabs[0].id);
+  });
+}
+
+// ── Page text extraction ────────────────────────────────────
+function grabText() {
+  return document.body.innerText;
+}
+
+function extractPage() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, tabs => {
+      const tab = tabs[0];
+      if (!tab || tab.url.startsWith("chrome://") || tab.url.startsWith("edge://")) {
+        reject(new Error("This page can't be read. Try a normal website."));
+        return;
+      }
+      chrome.scripting.executeScript(
+        { target: { tabId: tab.id }, function: grabText },
+        results => {
