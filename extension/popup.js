@@ -62,3 +62,25 @@ function extractPage() {
       chrome.scripting.executeScript(
         { target: { tabId: tab.id }, function: grabText },
         results => {
+          if (chrome.runtime.lastError || !results || !results[0]) {
+            reject(new Error("Couldn't read the page. Reload the tab and try again."));
+          } else {
+            resolve(results[0].result || "");
+          }
+        }
+      );
+    });
+  });
+}
+
+// ── Rendering ───────────────────────────────────────────────
+function hideEmpty() {
+  if (emptyState) emptyState.style.display = "none";
+}
+
+function addMsg(text, cls) {
+  hideEmpty();
+  const div = document.createElement("div");
+  div.className = `msg ${cls}`;
+  div.textContent = text;
+  chatLog.appendChild(div);
