@@ -84,3 +84,24 @@ function addMsg(text, cls) {
   div.className = `msg ${cls}`;
   div.textContent = text;
   chatLog.appendChild(div);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return div;
+}
+
+function addError(text) { addMsg(text, "error"); }
+
+function addBotNote(answerText, usedSearch) {
+  const note = document.createElement("div");
+  note.className = "msg-note";
+
+  const copyBtn = document.createElement("button");
+  copyBtn.textContent = "Copy";
+  copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(answerText);
+    copyBtn.textContent = "Copied";
+    setTimeout(() => (copyBtn.textContent = "Copy"), 1200);
+  });
+  note.appendChild(copyBtn);
+
+  if (usedSearch) {
+    const tag = document.createElement("span");
