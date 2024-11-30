@@ -105,3 +105,24 @@ function addBotNote(answerText, usedSearch) {
 
   if (usedSearch) {
     const tag = document.createElement("span");
+    tag.textContent = "· answered via web search";
+    note.appendChild(tag);
+  }
+  chatLog.appendChild(note);
+  chatLog.scrollTop = chatLog.scrollHeight;
+}
+
+function showTyping() {
+  hideEmpty();
+  const t = document.createElement("div");
+  t.className = "typing";
+  t.innerHTML = "<i></i><i></i><i></i>";
+  chatLog.appendChild(t);
+  chatLog.scrollTop = chatLog.scrollHeight;
+  return t;
+}
+
+// light cleanup so answers read well as plain text
+function tidy(text) {
+  return (text || "")
+    .replace(/\*\*(.+?)\*\*/gs, "$1")
