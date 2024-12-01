@@ -126,3 +126,25 @@ function showTyping() {
 function tidy(text) {
   return (text || "")
     .replace(/\*\*(.+?)\*\*/gs, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/`([^`]+)`/g, "$1")
+    .trim();
+}
+
+// ── Send flow ───────────────────────────────────────────────
+async function send() {
+  const query = queryInput.value.trim();
+  if (!query || busy) return;
+
+  busy = true;
+  sendBtn.disabled = true;
+  queryInput.value = "";
+  queryInput.style.height = "38px";
+  addMsg(query, "user");
+  const typing = showTyping();
+
+  try {
+    const text = await extractPage();
+    const res = await fetch(`${API}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
