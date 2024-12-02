@@ -148,3 +148,24 @@ async function send() {
     const res = await fetch(`${API}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text,
+        query,
+        session_id: sessionId,
+        model: modelSelect.value || undefined,
+      }),
+    });
+
+    typing.remove();
+
+    if (res.status === 429) {
+      const d = await res.json().catch(() => ({}));
+      addError(d.detail || "Daily limit reached. Try again tomorrow.");
+      return;
+    }
+    if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+    const data = await res.json();
+    const answer = tidy(data.answer);
+    addMsg(answer, "bot");
+    addBotNote(answer, data.used_search);
