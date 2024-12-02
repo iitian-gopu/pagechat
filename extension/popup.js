@@ -169,3 +169,24 @@ async function send() {
     const answer = tidy(data.answer);
     addMsg(answer, "bot");
     addBotNote(answer, data.used_search);
+  } catch (err) {
+    typing.remove();
+    addError(err.message);
+  } finally {
+    busy = false;
+    sendBtn.disabled = false;
+    queryInput.focus();
+  }
+}
+
+// ── New chat ────────────────────────────────────────────────
+newChatBtn.addEventListener("click", async () => {
+  chatLog.innerHTML = "";
+  chatLog.appendChild(emptyState);
+  emptyState.style.display = "";
+  try {
+    await fetch(`${API}/reset`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ session_id: sessionId }),
+    });
