@@ -190,3 +190,24 @@ newChatBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ session_id: sessionId }),
     });
+  } catch { /* offline reset is fine — local view already cleared */ }
+  queryInput.focus();
+});
+
+// ── Input behaviour ─────────────────────────────────────────
+sendBtn.addEventListener("click", send);
+queryInput.addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    send();
+  }
+});
+queryInput.addEventListener("input", () => {
+  queryInput.style.height = "38px";
+  queryInput.style.height = Math.min(queryInput.scrollHeight, 96) + "px";
+});
+
+metaHint.textContent = "Enter to send · Shift+Enter for a new line";
+
+init();
+queryInput.focus();
