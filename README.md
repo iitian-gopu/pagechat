@@ -20,3 +20,14 @@ A Chrome extension + FastAPI backend that lets you ask questions about the webpa
 ## Architecture
 
 ```
+┌─────────────────┐     page text + question      ┌──────────────────────────┐
+│ Chrome Extension │ ────────────────────────────▶ │      FastAPI backend     │
+│  (Manifest V3)   │ ◀──────────────────────────── │                          │
+└─────────────────┘        answer (JSON)          │  1. rate limit (IP/day)  │
+                                                  │  2. lite retrieval:      │
+                                                  │     chunk → keyword      │
+                                                  │     score → top-4        │
+                                                  │  3. LLM via Mesh API     │──▶ Gemini / GPT / DeepSeek
+                                                  │  4. tool-call fallback   │──▶ DuckDuckGo search
+                                                  └──────────────────────────┘
+```
