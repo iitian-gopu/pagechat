@@ -31,3 +31,14 @@ A Chrome extension + FastAPI backend that lets you ask questions about the webpa
                                                   │  4. tool-call fallback   │──▶ DuckDuckGo search
                                                   └──────────────────────────┘
 ```
+
+**Request flow:** the popup extracts the active tab's visible text (`chrome.scripting`), posts it with the question to `/chat`, the backend trims it to the most relevant chunks, calls the selected model with a `web_search` tool attached, and returns the answer (with a flag when search was used).
+
+## Engineering decisions
+
+**Keyword-scored retrieval instead of embedding RAG.** The first iteration used `sentence-transformers` + FAISS. That worked, but torch needs ~1 GB RAM — forcing paid hosting (~$25/mo) — plus slow cold starts and a runtime dependency on HuggingFace model downloads. I replaced it with a ~30-line pure-Python retriever: paragraph-boundary chunking, stopword-filtered keyword overlap scoring, top-k selection with original page order preserved, and a fallback to the page opening when nothing matches. For webpage Q&A the vocabulary of the question usually appears verbatim in the answering paragraph, so the semantic-matching loss is small — and the payoff is a 6-package backend that boots in ~2 seconds and deploys on a free 512 MB tier. `build_context()` is deliberately the single seam where hosted embeddings could be swapped back in.
+
+**Cost is bounded by design, not by hope.** Every completion call carries `max_tokens`; requests are rate-limited per-IP and globally per day (in-memory, proxy-aware via `X-Forwarded-For`); only low-cost models are exposed through `/models`, so the client can't select an expensive one; incoming page text is truncated before processing. Worst-case daily spend is a config constant, not a surprise.
+
+**Graceful degradation everywhere.** Missing API key → clear 500 at request time instead of a crash at import time. DuckDuckGo down → the chat still answers from page context. Tool-calling unsupported (DeepSeek R1) → the fallback path is skipped, not errored. `chrome://` pages → caught client-side with an actionable message.
+
