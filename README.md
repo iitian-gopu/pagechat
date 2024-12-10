@@ -42,3 +42,14 @@ A Chrome extension + FastAPI backend that lets you ask questions about the webpa
 
 **Graceful degradation everywhere.** Missing API key → clear 500 at request time instead of a crash at import time. DuckDuckGo down → the chat still answers from page context. Tool-calling unsupported (DeepSeek R1) → the fallback path is skipped, not errored. `chrome://` pages → caught client-side with an actionable message.
 
+## Tech stack
+
+| Layer | Tech |
+|---|---|
+| Extension | Vanilla JS, Chrome Manifest V3 (`activeTab`, `scripting`) |
+| Backend | Python, FastAPI, Uvicorn |
+| LLM gateway | Mesh API (OpenAI-compatible, async client) |
+| Retrieval | Custom pure-Python keyword-scored chunking |
+| Search fallback | DuckDuckGo (`ddgs`) via LLM tool-calling |
+| Deploy | Render free tier (`render.yaml` blueprint) |
+
