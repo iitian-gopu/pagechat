@@ -53,3 +53,14 @@ A Chrome extension + FastAPI backend that lets you ask questions about the webpa
 | Search fallback | DuckDuckGo (`ddgs`) via LLM tool-calling |
 | Deploy | Render free tier (`render.yaml` blueprint) |
 
+## Run locally
+
+**Backend**
+
+```bash
+cd backend
+pip install -r requirements.txt          # 6 small packages, seconds to install
+cp .env.example .env                     # Windows: copy .env.example .env
+# edit .env → MESH_API=your_key
+uvicorn main:app --reload                # or: python -m uvicorn main:app --reload
+```
