@@ -64,3 +64,14 @@ cp .env.example .env                     # Windows: copy .env.example .env
 # edit .env → MESH_API=your_key
 uvicorn main:app --reload                # or: python -m uvicorn main:app --reload
 ```
+
+Verify: http://127.0.0.1:8000/models should return JSON with 3 models.
+
+**Extension**
+
+1. `chrome://extensions` → enable **Developer mode** → **Load unpacked** → select `extension/`
+2. Open any normal webpage, click the PageChat icon (green dot = backend connected), ask away.
+
+## Deploy
+
+1. Push to GitHub (`.env` is gitignored).
