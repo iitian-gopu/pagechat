@@ -75,3 +75,14 @@ Verify: http://127.0.0.1:8000/models should return JSON with 3 models.
 ## Deploy
 
 1. Push to GitHub (`.env` is gitignored).
+2. [Render](https://render.com) → New → Web Service → connect the repo. Set **Root Directory** = `backend`, start command `uvicorn main:app --host 0.0.0.0 --port $PORT`, plan **Free**.
+3. Add `MESH_API` in the Environment tab → deploy → confirm `https://YOUR-APP.onrender.com/models` returns JSON.
+4. Point the extension at it: `extension/popup.js` line 4 → your Render URL → reload the extension.
+
+*Free-tier note: the service sleeps after ~15 min idle; first request after that takes ~30–50 s to wake.*
+
+## Configuration
+
+All tunables live in one CONFIG block at the top of `backend/main.py`:
+
+| Constant | Purpose |
