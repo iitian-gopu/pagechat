@@ -86,3 +86,14 @@ Verify: http://127.0.0.1:8000/models should return JSON with 3 models.
 All tunables live in one CONFIG block at the top of `backend/main.py`:
 
 | Constant | Purpose |
+|---|---|
+| `MAX_OUTPUT_TOKENS` | Caps answer length — the biggest cost lever |
+| `DAILY_GLOBAL_LIMIT` / `PER_IP_DAILY_LIMIT` | Daily request ceilings (global = budget ceiling) |
+| `ALLOWED_MODELS` | Which models the client may use |
+| `ENABLE_WEB_SEARCH` | Toggle the search fallback (second LLM call) |
+| `CONTEXT_CHUNKS` / `CHUNK_SIZE` | Retrieval granularity |
+
+## Project structure
+
+```
+pagechat/
