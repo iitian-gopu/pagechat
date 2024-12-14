@@ -97,3 +97,14 @@ All tunables live in one CONFIG block at the top of `backend/main.py`:
 
 ```
 pagechat/
+├── backend/
+│   ├── main.py              # API, retrieval, rate limiting, LLM + tool calls
+│   ├── requirements.txt
+│   └── .env.example
+├── extension/
+│   ├── manifest.json
+│   ├── popup.html / popup.css / popup.js
+│   └── icons/
+├── render.yaml              # one-click Render blueprint
+└── .gitignore
+```
